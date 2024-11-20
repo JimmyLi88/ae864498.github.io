@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>qdidi</title>
+    <style>
+        body {
+            background-image: linear-gradient(
+                rgba(255, 255, 255, 0.8),
+                rgba(255, 255, 255, 0.8)
+            ), url('Photo1.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: '微軟正黑體', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .message-container {
+            background-image: url('Hearts-bg.png');
+            background-size: cover;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 600px;
+            margin-top: 50px;
+            backdrop-filter: blur(5px);
+        }
+
+        .text-content {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .heart {
+            color: #ff4d6d;
+            font-size: 50px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        button {
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #ff3355;
+            transform: scale(1.05);
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        function toggleBackgroundMusic() {
+            const bgMusic = document.getElementById('bgMusic');
+            const musicButton = document.getElementById('musicToggle');
+            
+            if (!bgMusic) {
+                console.error('找不到音頻元素');
+                return;
+            }
+
+            try {
+                if (bgMusic.paused) {
+                    const playPromise = bgMusic.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            musicButton.textContent = '🔊';
+                            console.log('音樂開始播放');
+                        }).catch(error => {
+                            console.error('播放失敗:', error);
+                            musicButton.textContent = '🎵';
+                        });
+                    }
+                } else {
+                    bgMusic.pause();
+                    musicButton.textContent = '🎵';
+                    console.log('音樂已暫停');
+                }
+            } catch (error) {
+                console.error('音樂控制出錯:', error);
+            }
+        }
+
+        // 頁面加載完成後的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const bgMusic = document.getElementById('bgMusic');
+            
+            if (bgMusic) {
+                bgMusic.addEventListener('error', function(e) {
+                    console.error('音頻加載錯誤:', e);
+                });
+
+                bgMusic.addEventListener('loadeddata', function() {
+                    console.log('音頻已加載完成');
+                });
+            }
+        });
+    </script>
+    <meta name="autoplay" content="true">
+    <meta name="autoplay-policy" content="no-user-gesture-required">
+</head>
+<body>
+    <div class="message-container">
+        <div class="music-control">
+            <button id="musicToggle" onclick="toggleBackgroundMusic()">🎵</button>
+        </div>
+        <audio id="bgMusic" loop autoplay>
+            <source src="./Taylor Swift - Lover.mp3" type="audio/mpeg">
+            您的瀏覽器不支持音頻播放。
+        </audio>
+        <div id="playPrompt" style="display: none;">
+            點擊任意處播放音樂
+        </div>
+        <div class="text-content">
+            <div class="heart">❤️</div>
+            <h1>親愛的寶貝</h1>
+            <p>今天是個特別的日子，我想告訴妳...</p>
+            <button onclick="window.location.href='message.html'">點擊查看我的心意</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+</body>
+</html> 
