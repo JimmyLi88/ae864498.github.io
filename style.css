@@ -7,7 +7,6 @@ body {
     align-items: center;
     position: relative;
     background: linear-gradient(135deg, #fff5f5 0%, #ffe9e9 100%);
-    background-image: url('Main.png');
     background-blend-mode: overlay;
     background-size: contain;
     background-position: center;
