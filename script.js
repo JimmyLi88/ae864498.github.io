@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 網站初始化函數
 function initializeWebsite() {
     // 預加載圖片
-    preloadImages(['Photo1.png', 'Hearts-bg.png']);
+    preloadImages(['main.png', 'Hearts-bg.png']);
     
     // 添加點擊事件監聽器
     const button = document.querySelector('button');
@@ -191,18 +191,37 @@ let currentPhotoIndex = 0;
 const photos = document.querySelectorAll('.photo-item');
 
 function showNextPhoto() {
-    const photos = document.querySelectorAll('.photo-item');
-    let currentPhoto = document.querySelector('.photo-item.active');
-    let currentIndex = Array.from(photos).indexOf(currentPhoto);
-    
-    // 移除當前照片的 active 類
-    currentPhoto.classList.remove('active');
-    
-    // 計算下一張照片的索引
-    let nextIndex = (currentIndex + 1) % photos.length;
-    
-    // 添加 active 類到下一張照片
-    photos[nextIndex].classList.add('active');
+    const iframe = document.querySelector('#messageContent iframe');
+    if (!iframe || !iframe.contentDocument) {
+        console.log('找不到 iframe 或未加載完成');
+        return;
+    }
+
+    const photoItems = iframe.contentDocument.querySelectorAll('.photo-item');
+    if (!photoItems || photoItems.length === 0) {
+        console.log('找不到照片元素');
+        return;
+    }
+
+    let currentIndex = -1;
+    photoItems.forEach((item, index) => {
+        if (item.classList.contains('active')) {
+            currentIndex = index;
+        }
+    });
+
+    // 隱藏當前照片
+    if (currentIndex >= 0) {
+        photoItems[currentIndex].classList.remove('active');
+        photoItems[currentIndex].style.display = 'none';
+    }
+
+    // 顯示下一張照片
+    const nextIndex = (currentIndex + 1) % photoItems.length;
+    photoItems[nextIndex].classList.add('active');
+    photoItems[nextIndex].style.display = 'block';
+
+    console.log(`切換照片：${currentIndex + 1} -> ${nextIndex + 1}`);
 }
 
 function showPreviousPhoto() {
@@ -218,3 +237,157 @@ function showPreviousPhoto() {
 
 // 初始化照片顯示
 initializePhotos();
+
+// 修改點擊事件處理
+function navigateToMessage() {
+    loadMessageContent().catch(error => {
+        console.error('導航失敗:', error);
+        window.location.href = 'message.html';
+    });
+}
+
+async function loadMessageContent() {
+    try {
+        // 保存當前音樂狀態和時間
+        const bgMusic = document.getElementById('bgMusic');
+        const currentTime = bgMusic.currentTime;
+        const wasPlaying = !bgMusic.paused;
+        
+        // 加載 message.html 的內容
+        const response = await fetch('message.html');
+        const html = await response.text();
+        
+        // 創建一個臨時的 div 來解析 HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // 獲取 head 中的樣式
+        const styles = doc.head.querySelectorAll('style');
+        styles.forEach(style => {
+            document.head.appendChild(style.cloneNode(true));
+        });
+        
+        // 清空並設置新的 body 內容
+        document.body.innerHTML = doc.body.innerHTML;
+        
+        // 恢復音樂元素和控制按鈕
+        const newBgMusic = document.getElementById('bgMusic');
+        if (newBgMusic) {
+            newBgMusic.currentTime = currentTime;
+            if (wasPlaying) {
+                newBgMusic.play().then(() => {
+                    const musicButton = document.getElementById('musicToggle');
+                    if (musicButton) {
+                        musicButton.textContent = '🔊';
+                    }
+                }).catch(error => console.error('恢復播放失敗:', error));
+            }
+        }
+
+        // 更新 URL
+        history.pushState({}, '', 'message.html');
+        
+        // 重新初始化照片輪播功能
+        initializePhotos();
+        
+    } catch (error) {
+        console.error('切換頁面失敗:', error);
+        // 如果動態加載失敗，使用傳統跳轉
+        window.location.href = 'message.html';
+    }
+}
+
+// 初始化照片顯示函數
+function initializePhotos() {
+    const photos = document.querySelectorAll('.photo-item');
+    if (photos.length > 0) {
+        photos.forEach((photo, index) => {
+            if (index === 0) {
+                photo.classList.add('active');
+            } else {
+                photo.classList.remove('active');
+            }
+        });
+    }
+}
+
+// 在 DOMContentLoaded 事件中添加音樂狀態恢復邏輯
+document.addEventListener('DOMContentLoaded', function() {
+    const bgMusic = document.getElementById('bgMusic');
+    const musicWasPlaying = localStorage.getItem('musicPlaying') === 'true';
+    const musicTime = parseFloat(localStorage.getItem('musicCurrentTime') || 0);
+    
+    if (bgMusic && musicWasPlaying) {
+        bgMusic.currentTime = musicTime;
+        const playPromise = bgMusic.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                const musicButton = document.getElementById('musicToggle');
+                if (musicButton) {
+                    musicButton.textContent = '🔊';
+                }
+            }).catch(error => console.error('播放失敗:', error));
+        }
+    }
+});
+
+function showMessagePage() {
+    const mainContent = document.getElementById('mainContent');
+    const messageContent = document.getElementById('messageContent');
+    const bgMusic = document.getElementById('bgMusic');
+    
+    // 創建 iframe
+    const iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = 'none';
+    
+    // 添加加載完成事件
+    iframe.onload = function() {
+        // iframe 加載完後初始化照片
+        initializePhotos(iframe);
+    };
+    
+    iframe.src = 'message.html';
+    
+    // 隱藏主內容，顯示新內容
+    mainContent.style.display = 'none';
+    messageContent.style.display = 'block';
+    messageContent.appendChild(iframe);
+    
+    // 更新 URL（可選）
+    history.pushState({}, '', 'message.html');
+    
+    // 確保音樂繼續播放
+    if (!bgMusic.paused) {
+        const currentTime = bgMusic.currentTime;
+        bgMusic.play().then(() => {
+            bgMusic.currentTime = currentTime;
+        }).catch(error => console.error('音樂播放失敗:', error));
+    }
+}
+
+// 處理瀏覽器的後退按鈕
+window.addEventListener('popstate', function(event) {
+    const mainContent = document.getElementById('mainContent');
+    const messageContent = document.getElementById('messageContent');
+    
+    if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+        messageContent.style.display = 'none';
+        mainContent.style.display = 'block';
+    }
+});
+
+// 修改初始化照片函數
+function initializePhotos(iframe) {
+    if (iframe && iframe.contentDocument) {
+        const photos = iframe.contentDocument.querySelectorAll('.photo-item');
+        photos.forEach((photo, index) => {
+            if (index === 0) {
+                photo.classList.add('active');
+            } else {
+                photo.classList.remove('active');
+            }
+        });
+    }
+}

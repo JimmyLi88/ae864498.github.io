@@ -17,71 +17,38 @@
             width: 100%;
             max-width: 800px;
             margin: 0 auto;
+            height: auto;
         }
 
         .photo-item {
-            width: 100%;
             display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
         .photo-item.active {
             display: block;
+            opacity: 1;
         }
 
         .photo-item img {
             width: 100%;
-            height: 400px;
-            object-fit: cover;
+            height: auto;
+            object-fit: contain;
             border-radius: 10px;
+            margin-bottom: 10px;
         }
 
         .photo-caption {
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 8px;
-            border-radius: 0 0 10px 10px;
-        }
-
-        .gallery-nav,
-        .nav-button {
-            display: none;
-        }
-
-        .next-button {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(255, 192, 203, 0.7);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .next-button:hover {
-            background-color: rgba(255, 192, 203, 0.9);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .photo-caption {
+            position: relative;
             text-align: center;
             padding: 15px;
             background: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
             margin-top: 10px;
+            bottom: auto;
+            left: auto;
+            right: auto;
         }
 
         .photo-caption h3 {
@@ -97,63 +64,200 @@
             line-height: 1.5;
         }
 
-        .photo-item {
+        .gallery-nav,
+        .nav-button {
             display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
         }
 
-        .photo-item.active {
-            display: block;
-            opacity: 1;
+        .next-button {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 192, 203, 0.8);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .next-button:hover {
+            background-color: rgba(255, 192, 203, 1);
+        }
+
+        .prev-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 192, 203, 0.8);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .prev-button:hover {
+            background-color: rgba(255, 192, 203, 1);
+            transform: translateY(-50%) scale(1.1);
         }
     </style>
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self'">
 </head>
 <body>
     <div class="message-container">
-        <div class="music-control">
-            <button id="musicToggle" onclick="toggleBackgroundMusic()">🎵</button>
-        </div>
-        <audio id="bgMusic" loop>
-            <source src="./Taylor Swift - Lover.mp3" type="audio/mpeg">
-        </audio>
-        
         <div class="text-content">
-            <div class="heart">❤️</div>
-            <h1>我們的美好回憶</h1>
             <div class="photo-gallery">
                 <div class="photo-container">
                     <div class="photo-content">
                         <div class="photo-item active">
                             <img src="photo1.jpg" alt="回憶1">
                             <div class="photo-caption">
-                                <p>每一刻與妳在一起的時光都是最珍貴的回憶</p>
+                                <p>還記得第一次約會是去動物園,當初的我們真的是圓滾滾
+                                    希望我們繼續保持這份天真!
+                                </p>
                             </div>
                         </div>
                         <div class="photo-item">
                             <img src="photo2.jpg" alt="回憶2">
                             <div class="photo-caption">
-                                <p>和妳一起的每個約會都讓我期待下一次的相遇</p>
+                                <p>這張不知道妳還記得嗎,是我第一次幫妳拍照,那次就沒生氣,現在的脾氣都好大
+                                    不知道是被什麼養壞了
+                                </p>
                             </div>
                         </div>
                         <div class="photo-item">
                             <img src="photo3.jpg" alt="回憶3">
                             <div class="photo-caption">
-                                <p>願未來的日子裡繼續攜手相伴，創造更多美好回憶</p>
+                                <p>再來就是在一起沒多久就遇到妳生日,完完全全被妳賺到 印象沒多久妳就出國了
+                                    未來的路上還會陪妳過很多很多的生日,要繼續快樂噢小可愛
+                                </p>
                             </div>
                         </div>
                         <div class="photo-item">
-                            <img src="photo4.jpg" alt="回憶3">
+                            <img src="photo4.jpg" alt="回憶4">
                             <div class="photo-caption">
-                                <p>願未來的日子裡繼續攜手相伴，創造更多美好回憶</p>
+                                <p>對於超級I人的我第一次在戶外野餐是需要很大的勇氣,但真的其實也不用太在意別人眼光
+                                    這樣其實蠻快樂也蠻放鬆的,妳也告訴我不要太在意自己的面子(但現在我還是會偷偷在意),
+                                    希望我能跟妳一樣厚臉皮的快樂下去
+                                </p>
+                            </div>
+                        </div>
+                        <div class="photo-item">
+                            <img src="photo5.jpg" alt="回憶5">
+                            <div class="photo-caption">
+                                <p>很羨慕其他情侶會有好看的照片,現在的我也有!尤其是這種一起出去玩的都會覺得好可愛
+                                我記得這次露營是難得的好天氣,這樣做起任何事情來都會很快樂,寶寶回來了我們也可以繼續
+                                挑戰更多露營的地方
+                                </p>
+                            </div>
+                        </div>
+                        <div class="photo-item">
+                            <img src="photo6.jpg" alt="回憶6">
+                            <div class="photo-caption">
+                                <p>很喜歡這樣的偶們!每次出去玩都喜歡鏡子前面拍一張,很真很可愛尤其妳穿著我的衣服或是褲子的時候
+                                    像極了一個小孩子,然後再下去吃個早餐回來再一起耍廢哈哈
+                                </p>
+                            </div>
+                        </div>
+                        <div class="photo-item">
+                            <img src="photo7.jpg" alt="回憶7">
+                            <div class="photo-caption">
+                                <p>這算是我們第一次很正式又很好看的其中一張?但想想我們的合照真的好像少之又少
+                                    都是一些我在搞笑或是不再狀況內的照片哈哈
+                                </p>
+                            </div>
+                        </div>
+                        <div class="photo-item">
+                            <img src="photo8.jpg" alt="回憶8">
+                            <div class="photo-caption">
+                                <p>
+                                會拿這張照片的原因就是因為妳在睡覺,我自己知道我的睡眠品質沒有很好常常亂睡
+                                所以在跟妳睡覺的時候都會看著妳,真的就是小朋友一樣 雖然妳都會嚇到
+                                但我還是會繼續看著妳睡覺的噢~  
+                                </p>
+                            </div>
+                        </div>
+                        <div class="photo-item">
+                            <img src="photo9.jpg" alt="回憶9">
+                            <div class="photo-caption">
+                                <p>
+                                前面說了這麼多,也沒特別的禮物可以給妳,就做了爛爛的網頁給妳,希望妳會喜歡
+                                知道妳很在意自己的體重呀什麼的沒自信什麼的
+                                但在我眼中妳是最好的,常常告訴妳要有自信,不要太在意別人的眼光,知道妳回來了會很辛苦
+                                可能會常常想崩潰之類的,但妳要知道背後有我,不要自己一個人扛,妳可以像個小孩像我撒嬌
+                                像妳生氣的時候對我亂打一通我都接受。辛苦妳在國外都一個人的生活,但不用擔心!現在有我會陪著妳
+                                </p>
                             </div>
                         </div>
                     </div>
-                    <button class="next-button" onclick="showNextPhoto()">❯</button>
                 </div>
+                <button class="prev-button" onclick="prevPhoto()">❮</button>
+                <button class="next-button" onclick="nextPhoto()">❯</button>
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        function nextPhoto() {
+            const photos = document.querySelectorAll('.photo-item');
+            let currentIndex = -1;
+
+            photos.forEach((photo, index) => {
+                if (photo.classList.contains('active')) {
+                    currentIndex = index;
+                }
+            });
+
+            if (currentIndex >= 0) {
+                photos[currentIndex].classList.remove('active');
+            }
+
+            const nextIndex = (currentIndex + 1) % photos.length;
+            photos[nextIndex].classList.add('active');
+
+            console.log('切換到照片:', nextIndex + 1);
+        }
+
+        function prevPhoto() {
+            const photos = document.querySelectorAll('.photo-item');
+            let currentIndex = -1;
+
+            photos.forEach((photo, index) => {
+                if (photo.classList.contains('active')) {
+                    currentIndex = index;
+                }
+            });
+
+            if (currentIndex >= 0) {
+                photos[currentIndex].classList.remove('active');
+            }
+
+            const prevIndex = (currentIndex - 1 + photos.length) % photos.length;
+            photos[prevIndex].classList.add('active');
+
+            console.log('切換到照片:', prevIndex + 1);
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') {
+                nextPhoto();
+            } else if (event.key === 'ArrowLeft') {
+                prevPhoto();
+            }
+        });
+    </script>
 </body>
 </html> 
